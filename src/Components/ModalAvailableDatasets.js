@@ -45,9 +45,10 @@ class ModalAvailableDatasets extends Component{
     this.setState({ selectedSet: event.target.value });
   }
 
-  function datasourceItem () {
-    return datasources.map((datasource)=>{<MenuItem value={datasource}>{datasource.name}</MenuItem>})
+  datasourceItem () {
+    return datasources.map( datasource => {return <MenuItem value={datasource}>{datasource.name}</MenuItem>})
   }
+
   render() {
     const { classes } = this.props;
 
