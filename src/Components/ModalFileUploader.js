@@ -12,7 +12,8 @@ class ModalFileUploader extends Component {
     this.state = {
       open: false,
       uploading: false,
-      items: 0
+      items: 0,
+      disableBackdropClick:true
     }
     this.onImageDrop = this.onImageDrop.bind(this)
   }
@@ -28,7 +29,6 @@ class ModalFileUploader extends Component {
     });
   };
   onImageDrop(files){
-    let a= 12;
   };
 
   render() {
@@ -41,7 +41,7 @@ class ModalFileUploader extends Component {
          aria-labelledby="simple-modal-title"
          aria-describedby="simple-modal-description"
          open={this.state.open}
-         disableBackdropClick="true"
+         disableBackdropClick={this.state.disableBackdropClick}
          onClose={this.handleClose}
        >
          <div style={getModalStyle()} className={classes.paper}>

@@ -9,17 +9,15 @@ import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import LinearProgress from '@material-ui/core/LinearProgress';
-// import axios from 'axios';
 import datasources from "../ML/Datasources";
 
 class ModalAvailableDatasets extends Component{
   constructor(props) {
-    console.log(datasources)
     super(props)
     this.state = {
       open: false,
-      selectedSet: null,
-      uploading: false
+      selectedSet: "",
+      loading: false
     }
   }
   handleOpen = () => {
@@ -29,24 +27,38 @@ class ModalAvailableDatasets extends Component{
   };
 
   handleClose = () => {
-    this.setState({
-      open: false
-    });
+    var res = {
+      open: false,
+      loading: false
+    }
+    if(!this.state.loaded){
+      res.selectedSet = "";
+    }
+
+    this.setState(res);
   };
   load = () =>{
     this.setState({
-      uploading: true,
+      loading: true,
     });
-    // axios.get('https://api.github.com/users/maecapozzi').then(response => console.log(response))
+    var datasource= datasources.find(x=> x.name === this.state.selectedSet);
+    datasource.getData().then(res=>{
+      this.setState({ loaded: true })
+      this.props.handleDataLoaded(res)
+      this.handleClose();
+    }, err=>{
+      debugger;
+      alert('failed to load data')
+      this.handleClose();
 
+    })
   }
   handleItemSelect = event => {
-    console.log(event.target)
     this.setState({ selectedSet: event.target.value });
   }
 
-  datasourceItem () {
-    return datasources.map( datasource => {return <MenuItem value={datasource}>{datasource.name}</MenuItem>})
+  datasourceItems () {
+    return datasources.map( datasource => {return <MenuItem value={datasource.name} key={datasource.name}>{datasource.name}</MenuItem>})
   }
 
   render() {
@@ -59,7 +71,7 @@ class ModalAvailableDatasets extends Component{
         aria-describedby="simple-modal-description"
         open={this.state.open}
         onClose={this.handleClose}
-        disableBackdropClick={this.state.uploading}
+        disableBackdropClick={this.state.loading}
 
       >
         <div className={classes.paper}>
@@ -68,21 +80,18 @@ class ModalAvailableDatasets extends Component{
               Select Dataset
             </Typography>
           </div>
-          {!this.state.uploading ?
+          {!this.state.loading ?
           <FormControl className={classes.formControl}>
                 <InputLabel htmlFor="Dataset">Data Set</InputLabel>
                 <Select
                   value={this.state.selectedSet}
                   onChange={this.handleItemSelect}
-                  inputProps={{
-                    name: 'dateset',
-                    id: 'dataset',
-                  }}
                 >
+                {this.datasourceItems()}
                 </Select>
           </FormControl> :
           <div className={classes.lpb}>
-            <h3>Loading....</h3>
+          <br></br>
             <LinearProgress />
           </div>
         }
@@ -91,7 +100,7 @@ class ModalAvailableDatasets extends Component{
               Cancel
             </Button>
             <Button variant="outlined" color="primary"
-              disabled = {this.state.selectedSet == null || this.state.uploading}
+              disabled = {this.state.selectedSet === "" || this.state.loading}
               className={classes.button} onClick={this.load}>
               Load
             </Button>

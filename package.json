@@ -5,7 +5,10 @@
   "dependencies": {
     "@material-ui/core": "^3.3.2",
     "@tensorflow/tfjs": "^0.13.2",
+    "axios": "^0.18.0",
     "axis": "^1.0.0",
+    "jszip": "^3.2.1",
+    "jszip-utils": "0.0.2",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
     "react-dropzone": "^7.0.1",
