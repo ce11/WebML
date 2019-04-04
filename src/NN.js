@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Cnn from "./ML/Cnn"
 import ModalFileUploaderWrapped from './Components/ModalFileUploader'
 import ModalAvailableDatasetsWrapped from './Components/ModalAvailableDatasets'
+import * as tf from '@tensorflow/tfjs';
 
 class NN extends Component{
   constructor(props){
@@ -13,20 +14,34 @@ class NN extends Component{
     this.trainModel = this.trainModel.bind(this);
     this.handleDataLoaded = this.handleDataLoaded.bind(this)
   }
+  batchEndCb(percentComplete){
+    console.log("completed: "+percentComplete + "%");
+  }
+  epochEndCb(status){
+    console.log(status);
+  }
   trainModel(e){
     let cnn = new Cnn()
-    cnn.init();
+    cnn.init(this.state.data.w, this.state.data.h);
     this.setState({
       "status":"progress"
     })
-    cnn.fit().then(()=>{
-      let res = cnn.predict(null);
-      res.data().then(res=>{
-        this.setState({
-          "status":"trained",
-          "result": res[0]
-        })
-      })
+    let tensorXs = tf.tensor4d(
+        this.state.data.inputs,
+        [this.state.data.inputs.length / (this.state.data.h * this.state.data.w),
+          this.state.data.h, this.state.data.w, 1]);
+    let tensorYs = tf.tensor2d(
+        this.state.data.labels, [this.state.data.labels.length, this.state.data.classes]);
+
+    cnn.fit(tensorXs, tensorYs, this.batchEndCb, this.epochEndCb).then((res)=>{
+      this.setState({"status":"trained", "result":"done"})
+      // let res = cnn.predict(null);
+      // res.data().then(res=>{
+      //   this.setState({
+      //     "status":"trained",
+      //     "result": res[0]
+      //   })
+      // })
     })
   }
 
