@@ -27,7 +27,7 @@ var datasources = [{
           JSZip.loadAsync(data).then((unzipped) => {
             Promise.all([unzipped.file('labels').async('nodebuffer'), unzipped.file('images').async('nodebuffer')])
               .then(function(results) {
-                var nImages = parseInt(bufferToHex(results[0].slice(0,4)),16)
+                var nImages = parseInt(bufferToHex(results[0].slice(4,8)),16)
                 var nRows = parseInt(bufferToHex(results[1].slice(8,12)), 16);
                 var nCols = parseInt(bufferToHex(results[1].slice(12,16)), 16);
                 var imageSize = nRows * nCols;
