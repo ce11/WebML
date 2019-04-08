@@ -22,25 +22,13 @@ class Cnn {
       callbacks: {
         onBatchEnd: async (batch, logs) => {
           trainBatchCount++;
-          // console.log((trainBatchCount / totalNumBatches * 100).toFixed(1) + " Complete")
           if(batchEndCb){
             batchEndCb((trainBatchCount / totalNumBatches * 100).toFixed(1))
           }
-          // ui.logStatus(
-          //     `Training... (` +
-          //     `${(trainBatchCount / totalNumBatches * 100).toFixed(1)}%` +
-          //     ` complete). To stop training, refresh or close page.`);
-          // ui.plotLoss(trainBatchCount, logs.loss, 'train');
-          // ui.plotAccuracy(trainBatchCount, logs.acc, 'train');
-          // if (onIteration && batch % 10 === 0) {
-          //   onIteration('onBatchEnd', batch, logs);
-          // }
+
           await tf.nextFrame();
         },
         onEpochEnd: async (epoch, logs) => {
-          var valAcc = logs.val_acc;
-          // console.log('loss: ', logs.val_loss)
-          // console.log('acc: ', logs.val_acc)
           if(epochEndCb){
             epochEndCb({"acc":logs.val_acc, "loss":logs.val_loss})
           }

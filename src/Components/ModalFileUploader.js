@@ -36,7 +36,7 @@ class ModalFileUploader extends Component {
 
    return (
      <div>
-       <Button onClick={this.handleOpen}>Upload Files</Button>
+       <Button variant="contained" color="secondary" onClick={this.handleOpen}>Upload Files</Button>
        <Modal
          aria-labelledby="simple-modal-title"
          aria-describedby="simple-modal-description"

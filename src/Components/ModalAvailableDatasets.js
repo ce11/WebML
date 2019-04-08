@@ -20,6 +20,7 @@ class ModalAvailableDatasets extends Component{
       loading: false
     }
   }
+
   handleOpen = () => {
     this.setState({
       open: true
@@ -37,6 +38,7 @@ class ModalAvailableDatasets extends Component{
 
     this.setState(res);
   };
+
   load = () =>{
     this.setState({
       loading: true,
@@ -45,9 +47,8 @@ class ModalAvailableDatasets extends Component{
     datasource.getData().then(res=>{
       this.setState({ loaded: true })
       this.props.handleDataLoaded(res)
-      this.handleClose();
+      // this.handleClose();
     }, err=>{
-      debugger;
       alert('failed to load data')
       this.handleClose();
 
@@ -65,18 +66,17 @@ class ModalAvailableDatasets extends Component{
     const { classes } = this.props;
 
     return(<div>
-      <Button onClick={this.handleOpen}>Select from Available Datasets</Button>
+      <Button variant="contained" color="primary" onClick={this.handleOpen}>Select from Available Datasets</Button>
       <Modal
         aria-labelledby="simple-modal-title"
         aria-describedby="simple-modal-description"
         open={this.state.open}
         onClose={this.handleClose}
         disableBackdropClick={this.state.loading}
-
       >
         <div className={classes.paper}>
           <div className={classes.centerText}>
-            <Typography variant="h6" id="modal-title" >
+            <Typography variant="subtitle1" id="modal-title" >
               Select Dataset
             </Typography>
           </div>

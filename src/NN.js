@@ -4,6 +4,8 @@ import ModalFileUploaderWrapped from './Components/ModalFileUploader'
 import ModalAvailableDatasetsWrapped from './Components/ModalAvailableDatasets'
 import * as tf from '@tensorflow/tfjs';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
 
 class NN extends Component{
   constructor(props){
@@ -37,14 +39,6 @@ class NN extends Component{
         this.state.data.labels, [this.state.data.labels.length, this.state.data.classes]);
     cnn.fit(tensorXs, tensorYs, this.batchEndCb, this.epochEndCb).then((res)=>{
       this.setState({"status":"trained", "result":"done"})
-      debugger;
-      // let res = cnn.predict(null);
-      // res.data().then(res=>{
-      //   this.setState({
-      //     "status":"trained",
-      //     "result": res[0]
-      //   })
-      // })
     })
   }
 
@@ -55,29 +49,31 @@ class NN extends Component{
   }
 
   render() {
-    let button = <h1>ERROR</h1>;
+    let button = <Typography  style={{textAlign: 'center'}} variant="subtitle1">ERROR</Typography>;
     if(this.state.status === "untrained"){
-      button = <button  onClick={this.trainModel}> Train the model </button>;
+      button = <Button variant="contained" color="primary" onClick={this.trainModel}> Train the model </Button>;
     }else if(this.state.status === "progress"){
       button =  <div><LinearProgress variant="determinate" value={parseInt(this.state.trainCompleted)} />
         <br></br>
-        <h4>completed: {this.state.trainCompleted}"%"</h4>
+        <h4>completed: {parseInt(this.state.trainCompleted)}%</h4>
         </div>;
     }else if(this.state.status === "trained"){
       button = <h3>{this.state.result}</h3>;
     }
-
     return(
       <div>
-      <h1>Neural Nets</h1>
-        {this.state.data == null ?
+      <div style={{justifyContent: 'center', flex: 1}}><Typography style={{textAlign: 'center'}} variant="h3">Neural Nets</Typography><br></br></div>
+        {this.state.data === null ?
           <div>
+              <ModalAvailableDatasetsWrapped handleDataLoaded={data => {
+                this.setState({data:data})
+              }}/>
+              <br></br>
               <ModalFileUploaderWrapped/>
-              <ModalAvailableDatasetsWrapped handleDataLoaded={this.handleDataLoaded}/>
-          </div> : button}
 
+          </div>
+          : button}
       </div>
-
     )
   }
 }
