@@ -58,10 +58,10 @@ class ModalFileUploader extends Component {
              </Dropzone>
            </div>
            <div className={classes.bottomRow}>
-             <Button variant="outlined" color="secondary" className={classes.button}>
+             <Button variant="outlined" color="secondary" className={classes.button} onClick={this.handleClose}>
                Cancel
              </Button>
-             <Button variant="outlined" color="primary" className={classes.button}>
+             <Button variant="outlined" color="primary" className={classes.button} onClick={this.handleClose}>
                Done
              </Button>
           </div>
@@ -90,13 +90,13 @@ const styles = theme => ({
     height:'60vh',
     backgroundColor: theme.palette.background.paper,
     boxShadow: theme.shadows[5],
-    padding: theme.spacing.unit * 4,
+    padding: theme.spacing(4),
     'justify-content': 'space-between',
     'flex-direction': 'column',
     'display': 'flex'
   },
   button: {
-    margin: theme.spacing.unit,
+    margin: theme.spacing(1),
   },
   bottomRow:{
     'justify-content': 'flex-end',

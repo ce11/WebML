@@ -120,13 +120,14 @@ const styles = theme => ({
     height: '10vw',
     backgroundColor: theme.palette.background.paper,
     boxShadow: theme.shadows[5],
-    padding: theme.spacing.unit * 4,
+    padding: theme.spacing(4),
     'justify-content': 'space-between',
     'flex-direction': 'column',
     'display': 'flex'
   },
   button: {
-    margin: theme.spacing.unit,
+    marginLeft: theme.spacing(1),
+    display: 'flex'
   },
   bottomRow:{
     'justify-content': 'flex-end',
@@ -142,7 +143,7 @@ const styles = theme => ({
 
   },
   formControl: {
-    margin: theme.spacing.unit,
+    margin: theme.spacing(1),
     minWidth: 120
   },
   lpb: {

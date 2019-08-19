@@ -1,15 +1,11 @@
 import * as tf from '@tensorflow/tfjs';
 
 class Cnn {
-  constructor() {
-    this.model = tf.sequential();
-    this.batchSize = 320;
-    this.validationSplit = 0.15;
-    this.trainEpochs = 3;
-  }
-
-  init(w, h) {
-    this.model = this.createConvModel(w, h);
+  constructor(model, batchSize = 320, validationSplit = 0.15, trainEpochs = 3) {
+    this.model = model
+    this.batchSize = batchSize;
+    this.validationSplit = validationSplit;
+    this.trainEpochs = trainEpochs;
   }
 
   fit(xs, ys, batchEndCb, epochEndCb) {
@@ -22,15 +18,23 @@ class Cnn {
       callbacks: {
         onBatchEnd: async (batch, logs) => {
           trainBatchCount++;
-          if(batchEndCb){
-            batchEndCb((trainBatchCount / totalNumBatches * 100).toFixed(1))
+          if (batchEndCb.percentComplete) {
+            batchEndCb.percentComplete((trainBatchCount / totalNumBatches * 100).toFixed(1))
           }
-
+          if(batchEndCb.visual){
+              batchEndCb.visual(batch, logs)
+          }
           await tf.nextFrame();
         },
         onEpochEnd: async (epoch, logs) => {
-          if(epochEndCb){
-            epochEndCb({"acc":logs.val_acc, "loss":logs.val_loss})
+          if (epochEndCb.status) {
+            epochEndCb.status({
+              "acc": logs.val_acc,
+              "loss": logs.val_loss
+            })
+          }
+          if(epochEndCb.visual){
+              epochEndCb.visual(epoch, logs);
           }
           await tf.nextFrame();
         }
@@ -41,58 +45,6 @@ class Cnn {
     // Use the model to do inference on a data point the model hasn't seen before:
     return this.model.predict(tensor);
     // return model.predict(tensor);
-  }
-  createDenseModel(w, h) {
-    const model = tf.sequential();
-    model.add(tf.layers.flatten({inputShape: [h, w, 1]}));
-    model.add(tf.layers.dense({units: 42, activation: 'relu'}));
-    model.add(tf.layers.dense({units: 10, activation: 'softmax'}));
-    return model;
-  }
-
-  createConvModel(w, h) {
-    const model = tf.sequential();
-
-    model.add(tf.layers.conv2d({
-      inputShape: [h, w, 1],
-      kernelSize: 3,
-      filters: 16,
-      activation: 'relu'
-    }));
-
-    model.add(tf.layers.maxPooling2d({
-      poolSize: 2,
-      strides: 2
-    }));
-    model.add(tf.layers.conv2d({
-      kernelSize: 3,
-      filters: 32,
-      activation: 'relu'
-    }));
-    model.add(tf.layers.maxPooling2d({
-      poolSize: 2,
-      strides: 2
-    }));
-    model.add(tf.layers.conv2d({
-      kernelSize: 3,
-      filters: 32,
-      activation: 'relu'
-    }));
-    model.add(tf.layers.flatten({}));
-    model.add(tf.layers.dense({
-      units: 64,
-      activation: 'relu'
-    }));
-    model.add(tf.layers.dense({
-      units: 10,
-      activation: 'softmax'
-    }));
-    model.compile({
-      optimizer: 'rmsprop',
-      loss: 'categoricalCrossentropy',
-      metrics: ['accuracy'],
-    });
-    return model;
   }
 }
 export default Cnn;
