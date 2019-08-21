@@ -4,10 +4,10 @@ import Cnn from '../ML/Cnn'
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
-import {DefaultNetBuilder} from '../ML/DefaultNetBuilder'
+import {DefaultNets} from '../ML/DefaultNets'
 import {withStyles} from '@material-ui/core/styles';
 import {Container} from '@material-ui/core'
-
+import {NNViewer} from '../Workflow/NNViewer'
 class NNBuilder extends Component {
     constructor(props) {
         super(props)
@@ -32,11 +32,11 @@ class NNBuilder extends Component {
         this.setState(obj)
     }
     setConv2d(data, batchSize, validationSplit, trainEpochs) {
-        return new Cnn(DefaultNetBuilder.createConvModel(data.w, data.h), batchSize,
+        return new Cnn(DefaultNets.createConvNet(data.w, data.h), batchSize,
             validationSplit, trainEpochs);
     }
     setDenseModel(data, batchSize, validationSplit, trainEpochs) {
-        return new Cnn(DefaultNetBuilder.createDenseModel(data.w, data.h),
+        return new Cnn(DefaultNets.createDenseNet(data.w, data.h),
             batchSize, validationSplit, trainEpochs);
     }
     setNetType(evt) {
@@ -44,15 +44,13 @@ class NNBuilder extends Component {
             this.state.batchSize, this.state.validationSplit,
             this.state.trainEpochs)
         this.setState({
-            netType: evt.target.value
+            netType: evt.target.value,
+            net: model.model
         })
         this.props.handleNetBuilt(model);
 
     }
 
-    buildLayersToNet() {
-
-    }
 
     render() {
         const {classes} = this.props;
@@ -105,6 +103,9 @@ class NNBuilder extends Component {
                    }}
                    margin="normal"
                  />
+                 </Container>
+                 <Container>
+                    <NNViewer net = {this.state.net} />
                  </Container>
             </div>
         )

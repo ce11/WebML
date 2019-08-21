@@ -1,11 +1,27 @@
 import * as tf from '@tensorflow/tfjs';
 
 class Cnn {
-  constructor(model, batchSize = 320, validationSplit = 0.15, trainEpochs = 3) {
-    this.model = model
+  constructor(arch, batchSize = 320, validationSplit = 0.15, trainEpochs = 3) {
+    this.model = this.buildLayersToNet(arch)
     this.batchSize = batchSize;
     this.validationSplit = validationSplit;
     this.trainEpochs = trainEpochs;
+  }
+
+  buildLayersToNet(layers) {
+      const model = tf.sequential();
+      layers.forEach((layer) => {
+          debugger;
+          let type = layer.type;
+          delete layer.type;
+          model.add(tf.layers[type](layer))
+      })
+      model.compile({
+          optimizer: 'rmsprop',
+          loss: 'categoricalCrossentropy',
+          metrics: ['accuracy'],
+      });
+      return model;
   }
 
   fit(xs, ys, batchEndCb, epochEndCb) {

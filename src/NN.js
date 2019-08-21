@@ -5,6 +5,8 @@ import NNBuilder from './Components/NNBuilder'
 import * as tf from '@tensorflow/tfjs';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Typography from '@material-ui/core/Typography';
+import Checkbox from '@material-ui/core/Checkbox';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Button from '@material-ui/core/Button';
 import * as tfVis from '@tensorflow/tfjs-vis'
 class NN extends Component{
@@ -72,25 +74,39 @@ class NN extends Component{
   handleNetBuilt(net){
     this.setState({network:net})
   }
-  handleToggleVisualizer(){
+  handleToggleVisualizer(evt){
       this.tfVis.visor();
-      if(!this.tfVis.visor().isOpen()){
-          this.tfVis.visor().open()
+      if(evt.target.checked){
+          this.tfVis.visor().open();
+      }else{
+          this.tfVis.visor().close();
       }
   }
+
   render() {
     let button = <Typography  style={{textAlign: 'center'}} variant="subtitle1">ERROR</Typography>;
+    let visualizeButton =
+        <FormControlLabel
+            control={
+              <Checkbox
+                onChange={this.handleToggleVisualizer}
+                color="primary"
+              />
+            }
+            label="Visualize"
+          />
     if(this.state.status === "untrained"){
       button =  <div>
       <NNBuilder data={this.state.data} handleNetBuilt={net => this.handleNetBuilt(net)}/>
       <br></br>
       <Button disabled={!this.state.network} variant="contained" color="primary" onClick={this.trainModel}> Train the model </Button>
-      <Button onClick={this.handleToggleVisualizer}> Visualize </Button>
-      </div>
+      {visualizeButton}
+      </div>;
     }else if(this.state.status === "progress"){
       button =  <div><LinearProgress variant="determinate" value={parseInt(this.state.trainCompleted)} />
         <br></br>
         <h4>completed: {parseInt(this.state.trainCompleted)}%</h4>
+        {visualizeButton}
         </div>;
     }else if(this.state.status === "trained"){
       button = <h3>{this.state.result}</h3>;
