@@ -1,5 +1,3 @@
-import * as tf from '@tensorflow/tfjs';
-
 export class DefaultNets {
     static createDenseNet(h, w) {
         return [{
